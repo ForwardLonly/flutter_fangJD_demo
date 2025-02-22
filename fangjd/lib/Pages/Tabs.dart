@@ -36,6 +36,7 @@ class _TabsState extends State<Tabs> {
           },
           // 如果items的数量超过三个的话，就需要设置这个属性，否者显示不出来
           type: BottomNavigationBarType.fixed,
+          fixedColor: Colors.red,
           items: [
             BottomNavigationBarItem(icon: Icon( Icons.home), label: "首页"),
             BottomNavigationBarItem(icon: Icon( Icons.category), label: "分类"),
