@@ -1,5 +1,9 @@
+import 'package:fangjd/Models/FocusModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:flutter_swiper_3/flutter_swiper_3.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 
@@ -13,27 +17,48 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  List<FocusItemModel> _focusItemList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // 获取轮播图的数据
+    _getSwipterDataRequest();
+  }
+
+  // 获取轮播图的数据
+  void _getSwipterDataRequest() async {
+    final url = Uri.parse('https://resources.ninghao.net/demo/posts.json');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      FocusModel focusM = FocusModel.fromJson(responseBody);
+      setState(() {
+        _focusItemList = focusM.posts;
+      });
+    }
+  }
+
   // 轮播图的设置
   Widget _swiperWidget() {
-    final List<Map> _imageList = [
-      {"url": "https://www.itying.com/images/flutter/slide01.jpg"},
-      {"url": "https://www.itying.com/images/flutter/slide02.jpg"},
-      {"url": "https://www.itying.com/images/flutter/slide03.jpg"},
-    ];
-    return AspectRatio(
-      aspectRatio: 2 / 1,
-      child: Swiper(
-        itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            _imageList[index]["url"],
-            fit: BoxFit.fill,
-          );
-        },
-        itemCount: _imageList.length,
-        pagination: SwiperPagination(),
-        autoplay: true,
-      ),
-    );
+    if (_focusItemList.isNotEmpty) {
+      return AspectRatio(
+        aspectRatio: 2 / 1,
+        child: Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            return Image.network(
+              _focusItemList[index].imageUrl,
+              fit: BoxFit.fill,
+            );
+          },
+          itemCount: _focusItemList.length,
+          pagination: SwiperPagination(),
+          autoplay: true,
+        ),
+      );
+    } else {
+      return Text("加载中");
+    }
   }
 
   // 标题组件
