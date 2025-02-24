@@ -1,11 +1,13 @@
-import 'package:fangjd/Models/FocusModel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:http/http.dart' as http;
+// 网络请求
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'dart:convert';
 
 import 'package:flutter_swiper_3/flutter_swiper_3.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
+import 'package:fangjd/Models/FocusModel.dart';
+import 'package:fangjd/Models/ProductModel.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -17,25 +19,49 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final dio = Dio();
   List<FocusItemModel> _focusItemList = [];
+  List<ProductItemModel> _guessYouLikeList = [];
 
   @override
   void initState() {
     super.initState();
+
+    // TODO: --设置代理的地方，等待删除
+     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) { 
+          client.findProxy = (uri) {
+            return 'PROXY 192.168.1.4:8888';
+          };
+     };
     // 获取轮播图的数据
     _getSwipterDataRequest();
+    // 获取猜你喜欢的数据
+    _getGuessYouLikeDataRequest();
   }
 
   // 获取轮播图的数据
   void _getSwipterDataRequest() async {
-    final url = Uri.parse('https://resources.ninghao.net/demo/posts.json');
-    final response = await http.get(url);
+    final response = await dio.get('https://resources.ninghao.net/demo/posts.json');
     if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      FocusModel focusM = FocusModel.fromJson(responseBody);
+      FocusModel focusM = FocusModel.fromJson(response.data);
       setState(() {
         _focusItemList = focusM.posts;
       });
+    }
+    
+  }
+
+  // 获取猜你喜欢的数据
+  void _getGuessYouLikeDataRequest() async {
+    final response = await dio.get('http://jd.itying.com/api/plist?is_hot=1');
+    if (response.statusCode == 200) {
+      final data = json.decode(response.data);
+      ProductModel productM = ProductModel.fromJson(data);
+      setState(() {
+        _guessYouLikeList = productM.result;
+      });
+    } else {
+      print('请求失败');
     }
   }
 
@@ -78,31 +104,40 @@ class _HomePageState extends State<HomePage> {
 
   // 猜你喜欢的视图
   Widget _guessYouLikeWidget() {
-    return Container(
-      height: Screenadapter.height(210),
-      padding: EdgeInsets.only(left: Screenadapter.width(20), top: Screenadapter.width(20), right: Screenadapter.width(20)),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              Container(
-                height: Screenadapter.height(140),
-                width: Screenadapter.height(140),
-                margin: EdgeInsets.only(left: Screenadapter.width(10) ,right: Screenadapter.width(10)),
-                child: Image.network('https://www.itying.com/images/flutter/hot${index+1}.jpg'),
-              ),
-              Container(
-                padding: EdgeInsets.only(top: Screenadapter.width(10)),
-                height:Screenadapter.height(44) ,
-                child: Text('第$index条'),
-              )
-            ],
-          );
-        },
-        itemCount: 10,
-      ),
-    );
+    if (_guessYouLikeList.isNotEmpty) {
+      return Container(
+        height: Screenadapter.height(210),
+        padding: EdgeInsets.only(left: Screenadapter.width(20), top: Screenadapter.width(20), right: Screenadapter.width(20)),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                Container(
+                  height: Screenadapter.height(140),
+                  width: Screenadapter.height(140),
+                  margin: EdgeInsets.only(left: Screenadapter.width(10) ,right: Screenadapter.width(10)),
+                  child: Image.network(_guessYouLikeList[index].pic),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: Screenadapter.width(10)),
+                  height:Screenadapter.height(44) ,
+                  width: Screenadapter.height(140),
+                  child: Text(_guessYouLikeList[index].title, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, ),
+                )
+              ],
+            );
+          },
+          itemCount: _guessYouLikeList.length,
+        ),
+      );
+    } else {
+      return SizedBox(
+        height: Screenadapter.height(210),
+        child: Center(child: Text("加载中....")),
+      );  
+    }
+    
   }
 
   // 热门推荐
