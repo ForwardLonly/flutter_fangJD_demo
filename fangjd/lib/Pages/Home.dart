@@ -62,6 +62,8 @@ class _HomePageState extends State<HomePage> {
       });
     } else {
       print('请求失败');
+      setState(() {
+      });
     }
   }
 
@@ -83,7 +85,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
-      return Text("加载中");
+      return AspectRatio(aspectRatio: 2/1, child: Center(child: Text("加载中")));
     }
   }
 
@@ -132,9 +134,32 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
-      return SizedBox(
+      // 设置默认数据
+      return Container(
         height: Screenadapter.height(210),
-        child: Center(child: Text("加载中....")),
+        padding: EdgeInsets.only(left: Screenadapter.width(20), top: Screenadapter.width(20), right: Screenadapter.width(20)),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                Container(
+                  height: Screenadapter.height(140),
+                  width: Screenadapter.height(140),
+                  margin: EdgeInsets.only(left: Screenadapter.width(10) ,right: Screenadapter.width(10)),
+                  child: Image.network('https://www.itying.com/images/flutter/hot${index+1}.jpg'),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: Screenadapter.width(10)),
+                  height:Screenadapter.height(44) ,
+                  width: Screenadapter.height(140),
+                  child: Text('第${index+1}个', overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, ),
+                )
+              ],
+            );
+          },
+          itemCount: 10,
+        ),
       );  
     }
     
