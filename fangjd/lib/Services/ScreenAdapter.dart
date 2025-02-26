@@ -6,7 +6,7 @@ class Screenadapter {
   }
 
   static height(double value) {
-    return ScreenUtil().setHeight(value);
+    return ScreenUtil().setWidth(value);
   }
 
   static screenWidth() {

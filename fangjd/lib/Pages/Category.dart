@@ -126,6 +126,9 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
             ), 
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, '/productList');
+                },
                 child: Column(
                   children: [
                     AspectRatio(
