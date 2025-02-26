@@ -13,7 +13,9 @@ class Tabs extends StatefulWidget {
 
 class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
-  final List _pageList = [
+  // 添加一个controller
+  late PageController _pageController;
+  final List<Widget> _pageList = [
     HomePage(),
     CategoryPage(),
     ShopPage(),
@@ -21,17 +23,30 @@ class _TabsState extends State<Tabs> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("JD_demo"),
         ),
-        body: _pageList[_currentIndex],
+        // body 中，必须用pageView来包裹
+        body: PageView(
+          // 第一个需要设置的属性：controller， 用于控制加载页面
+          controller: _pageController,
+          // 第二个需要设置的属性：需要加载哪些页面
+          children: _pageList,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (value) {
             setState(() {
               _currentIndex = value;
+              _pageController.jumpToPage(_currentIndex);
             });
           },
           // 如果items的数量超过三个的话，就需要设置这个属性，否者显示不出来
