@@ -1,11 +1,11 @@
 import 'dart:ffi';
 
 import 'package:fangjd/Models/CategoryModel.dart';
+import 'package:fangjd/Services/DioRequest.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'dart:convert';
 
 class CategoryPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
 
   int _selectIndex = 0;
   final double _leftWidth = Screenadapter.screenWidth() / 4;
-  final dio = Dio();
+  final dioRequest = Diorequest();
   List<CategoryItemModel> _leftCategoryItemList = [];
   List<CategoryItemModel> _rightCategoryItemList = [];
 
@@ -30,21 +30,13 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-
-    // TODO: --设置代理的地方，等待删除
-     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) { 
-          client.findProxy = (uri) {
-            return 'PROXY 192.168.1.4:8888';
-          };
-     };
-
     // 左边分类的数据请求
     _getLeftCategoryDataRequest();
   }
 
   // 左边分类的数据请求
   void _getLeftCategoryDataRequest() async {
-    final response = await dio.get('http://jd.itying.com/api/pcate');
+    final response = await dioRequest.dio.get('http://jd.itying.com/api/pcate');
     if (response.statusCode == 200) {
       print(response.data is Map);
       final data = json.decode(response.data);
@@ -65,7 +57,7 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
   // 右边分类的数据请求
   void _rightCategoryDataRequest(int pid) async {
     try {
-      final response = await dio.get('http://jd.itying.com/api/pcate/pid=${pid}');
+      final response = await dioRequest.dio.get('http://jd.itying.com/api/pcate/pid=${pid}');
       final data = json.decode(response.data);
       final categoryM = CategoryModel.fromJson(data);
       setState(() {

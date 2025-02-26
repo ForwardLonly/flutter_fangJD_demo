@@ -1,7 +1,6 @@
+import 'package:fangjd/Services/DioRequest.dart';
 import 'package:flutter/material.dart';
 // 网络请求
-import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'dart:convert';
 
 import 'package:flutter_swiper_3/flutter_swiper_3.dart';
@@ -19,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
 
-  final dio = Dio();
+  final dioRequest = Diorequest();
   List<FocusItemModel> _focusItemList = [];
   List<ProductItemModel> _guessYouLikeList = [];
 
@@ -30,13 +29,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   @override
   void initState() {
     super.initState();
-
-    // TODO: --设置代理的地方，等待删除
-     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) { 
-          client.findProxy = (uri) {
-            return 'PROXY 192.168.1.4:8888';
-          };
-     };
     // 获取轮播图的数据
     _getSwipterDataRequest();
     // 获取猜你喜欢的数据
@@ -45,7 +37,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   // 获取轮播图的数据
   void _getSwipterDataRequest() async {
-    final response = await dio.get('https://resources.ninghao.net/demo/posts.json');
+    final response = await dioRequest.dio.get('https://resources.ninghao.net/demo/posts.json');
     if (response.statusCode == 200) {
       FocusModel focusM = FocusModel.fromJson(response.data);
       setState(() {
@@ -57,7 +49,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   // 获取猜你喜欢的数据
   void _getGuessYouLikeDataRequest() async {
-    final response = await dio.get('http://jd.itying.com/api/plist?is_hot=1');
+    final response = await dioRequest.dio.get('http://jd.itying.com/api/plist?is_hot=1');
     if (response.statusCode == 200) {
       final data = json.decode(response.data);
       ProductModel productM = ProductModel.fromJson(data);
