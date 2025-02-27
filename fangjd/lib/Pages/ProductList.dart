@@ -49,7 +49,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
                   decoration: BoxDecoration(
                     border: _selectIndex == 1 ? _selectHeaderBoder() : null
                   ),
-                  child: Center(child: Text("综合", style: TextStyle(color: Colors.red),)),
+                  child: Center(child: Text("综合", style: TextStyle(color: _selectIndex == 1 ? Colors.red : Colors.black))),
                 ),
               )
             ),
@@ -64,7 +64,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
                   decoration: BoxDecoration(
                     border: _selectIndex == 2 ? _selectHeaderBoder() : null
                   ),
-                  child: Center(child: Text("销量")),
+                  child: Center(child: Text("销量", style: TextStyle(color: _selectIndex == 2 ? Colors.red : Colors.black))),
                 ),
               )
             ),
@@ -79,7 +79,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
                   decoration: BoxDecoration(
                     border: _selectIndex == 3 ? _selectHeaderBoder() : null
                   ),
-                  child: Center(child: Text("价格")),
+                  child: Center(child: Text("价格", style: TextStyle(color: _selectIndex == 3 ? Colors.red : Colors.black))),
                 ),
               )
             ),
@@ -94,7 +94,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
                   decoration: BoxDecoration(
                     border: _selectIndex == 4 ? _selectHeaderBoder() : null
                   ),
-                  child: Center(child: Text("筛选")),
+                  child: Center(child: Text("筛选", style: TextStyle(color: _selectIndex == 4 ? Colors.red : Colors.black))),
                 ),
               )
             ),
