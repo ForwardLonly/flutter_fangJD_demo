@@ -10,6 +10,7 @@ class ProductlistPage extends StatefulWidget {
 
 class _ProductlistPageState extends State<ProductlistPage> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectIndex = 1;
 
   Border _selectHeaderBoder() {
@@ -89,6 +90,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
                   setState(() {
                     _selectIndex = 4;
                   });
+                  _scaffoldKey.currentState?.openEndDrawer();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -183,12 +185,22 @@ class _ProductlistPageState extends State<ProductlistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("商品分类"),
+        actions: [
+          // 去掉’endDrawer‘默认设置的图标
+          Text("")
+        ],
+      ),
+      endDrawer: Drawer(
+        child: Center(child: Text("我是侧边栏")),
       ),
       body: Stack(
         children: [
+          // 筛选导航栏
           _subHeaderWidget(),
+          // 商品列表
           _productListWidget()
         ],
       ),
