@@ -1,3 +1,4 @@
+import 'package:fangjd/CommonWidget/LoadingWidget.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class ProductlistPage extends StatefulWidget {
 
 class _ProductlistPageState extends State<ProductlistPage> {
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectIndex = 1;
 
   Border _selectHeaderBoder() {
@@ -108,6 +109,8 @@ class _ProductlistPageState extends State<ProductlistPage> {
 
   // 商品列表
   Widget _productListWidget() {
+    return Loadingwidget();
+    /*
     return  Container(
       padding: EdgeInsets.all(Screenadapter.width(10)),
       margin: EdgeInsets.only(top: Screenadapter.height(80)),
@@ -180,6 +183,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
         itemCount: 10
       ),
     );
+    */
   }
   
   @override
