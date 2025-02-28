@@ -8,7 +8,7 @@ class Searchuninputwiget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-
+        Navigator.pushNamed(context, '/search');
       },
       child: Container(
         height: Screenadapter.height(80),
@@ -19,7 +19,7 @@ class Searchuninputwiget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.search, size: 16,),
+            Icon(Icons.search, size: 18, color: Colors.black45),
             SizedBox(width: 5),
             Text("请输入你想搜索的商品", style: TextStyle(fontSize: 14, color: Colors.black45))
           ],
