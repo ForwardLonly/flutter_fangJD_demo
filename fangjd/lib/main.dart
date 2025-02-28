@@ -22,14 +22,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
-    // final dio = Dio();
-    // // TODO: --设置代理的地方，等待删除
-    //  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) { 
-    //       client.findProxy = (uri) {
-    //         return 'PROXY 192.168.1.4:8888';
-    //       };
-    //  };
   }
 
   @override
@@ -43,6 +35,11 @@ class _MyAppState extends State<MyApp> {
         // home: Tabs()
           initialRoute: '/',
           onGenerateRoute: onGenerateRoute,
+          theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              // backgroundColor: Colors.white 
+            )
+          ),
         );
       },
     );

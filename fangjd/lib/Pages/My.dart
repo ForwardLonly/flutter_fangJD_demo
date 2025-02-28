@@ -10,8 +10,13 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("我的页面"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("用户中心"),
+      ),
+      body: Center(
+        child: Text("我的页面"),
+      ),
     );
   }
 }

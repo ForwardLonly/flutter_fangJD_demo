@@ -177,7 +177,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
       if (_isShowMore && (index == _productList.length -1)) {
         return Loadingwidget();
       } else {
-        return Text("");
+        return SizedBox(height: 1);
       }
     } else {
       if (index == _productList.length -1) {

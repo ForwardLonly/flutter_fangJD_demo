@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:fangjd/CommonWidget/SearchUnInputWiget.dart';
 import 'package:fangjd/Models/CategoryModel.dart';
 import 'package:fangjd/Services/DioRequest.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
@@ -161,6 +162,13 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Searchuninputwiget(),
+        leading: IconButton(onPressed: (){}, icon: Icon(Icons.center_focus_weak)),
+        actions: [
+          IconButton(onPressed: (){}, icon: Icon(Icons.message))
+        ],
+      ),
       body: Row(
         children: [
           _leftCategoryWidget(),

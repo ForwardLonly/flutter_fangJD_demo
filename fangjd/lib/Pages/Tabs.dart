@@ -31,9 +31,9 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("JD_demo"),
-        ),
+        // appBar: AppBar(
+        //   title: Text("JD_demo"),
+        // ),
         // body 中，必须用pageView来包裹
         body: PageView(
           // 第一个需要设置的属性：controller， 用于控制加载页面

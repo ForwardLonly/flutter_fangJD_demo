@@ -7,6 +7,7 @@ import 'package:flutter_swiper_3/flutter_swiper_3.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:fangjd/Models/FocusModel.dart';
 import 'package:fangjd/Models/ProductModel.dart';
+import 'package:fangjd/CommonWidget/SearchUnInputWiget.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -248,18 +249,27 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        _swiperWidget(),
-        SizedBox(height: Screenadapter.height(20)),
-        _titleWidget("猜你喜欢"),
-        SizedBox(height: Screenadapter.height(20)),
-        _guessYouLikeWidget(),
-        SizedBox(height: Screenadapter.height(20)),
-        _titleWidget("热门推荐"),
-        SizedBox(height: Screenadapter.height(10)),
-        _hotRecommentWidget()
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Searchuninputwiget(),
+        leading: IconButton(onPressed: (){}, icon: Icon(Icons.center_focus_weak)),
+        actions: [
+          IconButton(onPressed: (){}, icon: Icon(Icons.message))
+        ],
+      ),
+      body: ListView(
+        children: [
+          _swiperWidget(),
+          SizedBox(height: Screenadapter.height(20)),
+          _titleWidget("猜你喜欢"),
+          SizedBox(height: Screenadapter.height(20)),
+          _guessYouLikeWidget(),
+          SizedBox(height: Screenadapter.height(20)),
+          _titleWidget("热门推荐"),
+          SizedBox(height: Screenadapter.height(10)),
+          _hotRecommentWidget()
+        ],
+      ),
     );
   }
 }
