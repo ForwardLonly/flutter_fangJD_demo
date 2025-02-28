@@ -2,9 +2,12 @@ import 'package:fangjd/CommonWidget/LoadingWidget.dart';
 import 'package:fangjd/Models/ProductModel.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProductlistPage extends StatefulWidget {
-  const ProductlistPage({super.key});
+  final Map arguments;
+
+  const ProductlistPage({super.key, required this.arguments});
 
   @override
   State<ProductlistPage> createState() => _ProductlistPageState();
@@ -23,6 +26,8 @@ class _ProductlistPageState extends State<ProductlistPage> {
   bool _isShowMore = false;
   // 是否有更多的数据
   bool _isHaveMoreData = true;
+  // 搜索文字的初始化
+  TextEditingController _textEditContr = TextEditingController();
 
   @override
   void initState() {
@@ -44,11 +49,23 @@ class _ProductlistPageState extends State<ProductlistPage> {
       }
     });
 
+    if (widget.arguments["keyword"] != null) {
+      _textEditContr.text = widget.arguments["keyword"];
+    }
+
     // -----网络请求--------
     _getProductListDataRequest();
   }
 
   // -----网络请求--------
+  void _reGetProductListDataRequest() {
+    _productList = [];
+    _isShowMore = false;
+    _isHaveMoreData = true;
+    _getProductListDataRequest();
+  }
+
+
   void _getProductListDataRequest() async {
     setState(() {
       _isShowMore = true;
@@ -77,6 +94,62 @@ class _ProductlistPageState extends State<ProductlistPage> {
   }
 
   // -----视图设置--------
+  // 设置搜索条
+  Widget _searchInputWidget() {
+    return Container(
+      padding: EdgeInsets.only(left: Screenadapter.width(20)),
+      height: Screenadapter.height(80),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(233, 233, 233, 0.9),
+        borderRadius: BorderRadius.circular(Screenadapter.height(40)),
+      ),
+      child: TextField(
+          controller: _textEditContr,
+          autofocus: false,
+          decoration: InputDecoration(
+            // 设置内容的间距
+            contentPadding: EdgeInsets.all(10),
+            // 设置图标
+            prefixIcon: Icon(Icons.search, size: 18, color: Colors.black45),
+            // 设置前置图标的约束
+            prefixIconConstraints: BoxConstraints(
+                //添加内部图标之后，图标和文字会有间距，实现这个方法，不用写任何参数即可解决
+                minWidth: 30.0
+            ),
+            // 设置提示文字
+            hintText: "请输入你想搜索的商品",
+            // 设置提示文字的样式
+            hintStyle: TextStyle(fontSize: 16, color: Colors.black45),
+            // 去掉输入框底部的线
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+            ),
+          ),
+          onChanged: (value) {
+            _textEditContr.text = value;
+          },
+        ),
+    );
+  }
+
+  // 设置搜索的按钮
+  Widget _searchItemWiget() {
+    return InkWell(
+      onTap: (){
+        _reGetProductListDataRequest();
+      },
+      child: Container(
+        padding: EdgeInsets.only(right: Screenadapter.width(30)),
+        height: Screenadapter.height(80),
+        width: Screenadapter.width(100),
+        child: Center(
+          child: Text("搜索", style: TextStyle(fontSize: 18)),
+        ),
+      ),
+    );
+  }
+
+
   // 设置 筛选透视图的底部选中的线
   Border _selectHeaderBoder() {
     return Border(
@@ -276,10 +349,9 @@ class _ProductlistPageState extends State<ProductlistPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("商品分类"),
+        title: _searchInputWidget(),
         actions: [
-          // 去掉’endDrawer‘默认设置的图标
-          Text("")
+          _searchItemWiget()
         ],
       ),
       endDrawer: Drawer(

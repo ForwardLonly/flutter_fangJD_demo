@@ -8,7 +8,8 @@ import 'package:fangjd/Pages/Search.dart';
 final routes = {
   '/': (context) => Tabs(),
   '/search' : (context) => SearchPage(),
-  '/productList': (context) => ProductlistPage()
+  // 设置带参数的路由
+  '/productList': (context, {arguments}) => ProductlistPage(arguments: arguments)
 };
 
 //固定写法

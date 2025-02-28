@@ -11,7 +11,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
 
   final List<String> _hotSearchData = ["超级秒杀", "办公电脑", "儿童汽车", "唇彩唇蜜", "哪吒2"];
-  final List<String> _historySearchData = ["贝亲奶瓶", "纸尿裤", "婴儿衣架", "包被"];
+  List<String> _historySearchData = ["贝亲奶瓶", "纸尿裤", "婴儿衣架", "包被"];
+  String _searchTextValue = "";
 
   // 设置搜索条
   Widget _searchInputWidget() {
@@ -43,6 +44,9 @@ class _SearchPageState extends State<SearchPage> {
               borderSide: BorderSide.none,
             ),
           ),
+          onChanged: (value) {
+            _searchTextValue = value;
+          },
         ),
     );
   }
@@ -50,7 +54,12 @@ class _SearchPageState extends State<SearchPage> {
   // 设置搜索的按钮
   Widget _searchItemWiget() {
     return InkWell(
-      onTap: (){},
+      onTap: (){
+        // 进入商品分类后，点击返回，可以跳过搜索页，直接返回到根视图
+        Navigator.pushReplacementNamed(context, "/productList", arguments: {
+          "keyword": _searchTextValue
+        });
+      },
       child: Container(
         padding: EdgeInsets.only(right: Screenadapter.width(30)),
         height: Screenadapter.height(80),
@@ -82,12 +91,20 @@ class _SearchPageState extends State<SearchPage> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: _hotSearchData.map((value){
-                  return Container(
-                    height: 30,
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey[200],
-                    child: Center(child: Text(value)),
+                  return InkWell(
+                    onTap: (){
+                      // 进入商品分类后，点击返回，可以跳过搜索页，直接返回到根视图
+                      Navigator.pushReplacementNamed(context, "/productList", arguments: {
+                        "keyword": value
+                      });
+                    },
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      margin: EdgeInsets.only(right: 10),
+                      color: Colors.grey[200],
+                      child: Center(child: Text(value)),
+                    ),
                   );
                 }).toList(),
               ),
@@ -136,16 +153,24 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(top: 14, bottom: 14),
-                child: Text(_historySearchData[index -2], style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
+              InkWell(
+                onTap: (){
+                  // 进入商品分类后，点击返回，可以跳过搜索页，直接返回到根视图
+                  Navigator.pushReplacementNamed(context, "/productList", arguments: {
+                    "keyword": _historySearchData[index -2]
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.only(top: 14, bottom: 14),
+                  child: Text(_historySearchData[index -2], style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
+                ),
               ),
               Divider(height: 1, color: Colors.grey[200])
             ],
           ),
         );
       },
-      itemCount: _historySearchData.length + 2,
+      itemCount: _historySearchData.isNotEmpty ? _historySearchData.length + 2 : 1,
     );
   }
 
@@ -162,6 +187,11 @@ class _SearchPageState extends State<SearchPage> {
         borderRadius: BorderRadius.circular(5)
       ),
       child: InkWell(
+        onTap: (){
+          setState(() {
+            _historySearchData = [];
+          });
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
