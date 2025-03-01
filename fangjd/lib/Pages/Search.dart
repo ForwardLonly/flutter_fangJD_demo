@@ -1,5 +1,8 @@
+import 'package:fangjd/CommonWidget/ShowAlertWidget.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
+import 'package:fangjd/Services/StorageService.dart';
 import 'package:flutter/material.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -55,6 +58,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget _searchItemWiget() {
     return InkWell(
       onTap: (){
+        if (_searchTextValue.isEmpty) {
+          return;
+        }
+        // 存储数据
+        StorageService.setSearchHistoryString(_searchTextValue);
         // 进入商品分类后，点击返回，可以跳过搜索页，直接返回到根视图
         Navigator.pushReplacementNamed(context, "/productList", arguments: {
           "keyword": _searchTextValue
@@ -148,6 +156,7 @@ class _SearchPageState extends State<SearchPage> {
         if (index == 1) {
           return _historSearchTitleWidget();
         }
+        final keyword = _historySearchData[index -2];
         return Container(
           padding: EdgeInsets.only(left: 10, right: 10),
           child: Column(
@@ -157,12 +166,24 @@ class _SearchPageState extends State<SearchPage> {
                 onTap: (){
                   // 进入商品分类后，点击返回，可以跳过搜索页，直接返回到根视图
                   Navigator.pushReplacementNamed(context, "/productList", arguments: {
-                    "keyword": _historySearchData[index -2]
+                    "keyword": keyword
+                  });
+                },
+                onLongPress: (){
+                  ShowAlertWidget.showAlert(context, "删除提醒", "确认要删除这条数据吗").then((value) {
+                    if (value == 1) {
+                      StorageService.removeSearchKeyword(keyword).then((list){
+                        setState(() {
+                          _historySearchData = list;
+                        });
+                      });
+                    }
                   });
                 },
                 child: Container(
+                  width: double.infinity,
                   padding: EdgeInsets.only(top: 14, bottom: 14),
-                  child: Text(_historySearchData[index -2], style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
+                  child: Text(keyword, style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
                 ),
               ),
               Divider(height: 1, color: Colors.grey[200])
@@ -188,6 +209,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       child: InkWell(
         onTap: (){
+          StorageService.clearSearchHistory();
           setState(() {
             _historySearchData = [];
           });
@@ -201,6 +223,17 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    StorageService.getSearchHistoryString().then((list){
+      setState(() {
+        _historySearchData = list;
+      });
+    });
   }
 
   @override
