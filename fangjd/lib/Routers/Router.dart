@@ -1,3 +1,4 @@
+import 'package:fangjd/Pages/ProductDetailPage.dart';
 import 'package:fangjd/Pages/ProductList.dart';
 import 'package:flutter/material.dart';
 import 'package:fangjd/Pages/Tabs.dart';
@@ -9,7 +10,8 @@ final routes = {
   '/': (context) => Tabs(),
   '/search' : (context) => SearchPage(),
   // 设置带参数的路由
-  '/productList': (context, {arguments}) => ProductlistPage(arguments: arguments)
+  '/productList': (context, {arguments}) => ProductlistPage(arguments: arguments),
+  '/productDetail': (context) => ProductDetailPage(),
 };
 
 //固定写法

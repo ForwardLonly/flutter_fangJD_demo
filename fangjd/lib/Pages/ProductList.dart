@@ -27,7 +27,7 @@ class _ProductlistPageState extends State<ProductlistPage> {
   // 是否有更多的数据
   bool _isHaveMoreData = true;
   // 搜索文字的初始化
-  TextEditingController _textEditContr = TextEditingController();
+  final TextEditingController _textEditContr = TextEditingController();
 
   @override
   void initState() {
@@ -273,63 +273,68 @@ class _ProductlistPageState extends State<ProductlistPage> {
             ProductItemModel itemModel = _productList[index];
             return Column(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(Screenadapter.width(20)),
-                      width: Screenadapter.width(220),
-                      height: Screenadapter.height(220),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Image.network(itemModel.pic, fit: BoxFit.cover)
+                InkWell(
+                  onTap: (){
+                    Navigator.pushNamed(context, '/productDetail');
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(Screenadapter.width(20)),
+                        width: Screenadapter.width(220),
+                        height: Screenadapter.height(220),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.network(itemModel.pic, fit: BoxFit.cover)
+                        ),
                       ),
-                    ),
-                    Expanded(child: Container(
-                      height: Screenadapter.height(220),
-                      padding: EdgeInsets.only(top: Screenadapter.height(10)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            itemModel.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: Screenadapter.height(20)),
-                          Container(
-                            height: Screenadapter.height(36),
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: Screenadapter.height(40),
-                                  width: Screenadapter.width(80),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(Screenadapter.height(18)),
-                                    color: Colors.black12
-                                  ),
-                                  child: Center(child: Text(' 4G ', style: TextStyle(color: Colors.black87))),
-                                ),
-                                SizedBox(width: Screenadapter.width(20)),
-                                Container(
-                                  height: Screenadapter.height(40),
-                                  width: Screenadapter.width(80),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(Screenadapter.height(18)),
-                                    color: Colors.black12
-                                  ),
-                                  child: Center(child: Text(' 126 ', style: TextStyle(color: Colors.black87))),
-                                ),
-                              ],
+                      Expanded(child: Container(
+                        height: Screenadapter.height(220),
+                        padding: EdgeInsets.only(top: Screenadapter.height(10)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              itemModel.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          SizedBox(height: Screenadapter.width(20)),
-                          Text(itemModel.price, style: TextStyle(color: Colors.red, fontSize: 18))
-                        ]
-                      )
-                    ))
-                  ],
+                            SizedBox(height: Screenadapter.height(20)),
+                            Container(
+                              height: Screenadapter.height(36),
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: Screenadapter.height(40),
+                                    width: Screenadapter.width(80),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(Screenadapter.height(18)),
+                                      color: Colors.black12
+                                    ),
+                                    child: Center(child: Text(' 4G ', style: TextStyle(color: Colors.black87))),
+                                  ),
+                                  SizedBox(width: Screenadapter.width(20)),
+                                  Container(
+                                    height: Screenadapter.height(40),
+                                    width: Screenadapter.width(80),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(Screenadapter.height(18)),
+                                      color: Colors.black12
+                                    ),
+                                    child: Center(child: Text(' 126 ', style: TextStyle(color: Colors.black87))),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: Screenadapter.width(20)),
+                            Text(itemModel.price, style: TextStyle(color: Colors.red, fontSize: 18))
+                          ]
+                        )
+                      ))
+                    ],
+                  )
                 ),
                 Divider(height: Screenadapter.height(2)),
                 _productBottomWiget(index)
