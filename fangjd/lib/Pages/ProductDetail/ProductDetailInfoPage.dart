@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fangjd/CommonWidget/BackgroudButtonWidget.dart';
+import 'package:fangjd/Pages/ProductDetail/ProductShowModelBottomSheet.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class ProductDetailInfoPage extends StatefulWidget {
 }
 
 class _ProductDetailInfoPageState extends State<ProductDetailInfoPage> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,8 +44,6 @@ class _ProductDetailInfoPageState extends State<ProductDetailInfoPage> {
               fontSize: 14,
               color: Colors.black45
             ),
-            // maxLines: 2,
-            // overflow: TextOverflow.ellipsis,
           ),
           // 规格
           Container(
@@ -56,12 +57,17 @@ class _ProductDetailInfoPageState extends State<ProductDetailInfoPage> {
                 )
               )
             ),
-            child: Row(
-              children: [
-                Text("已选：", style: TextStyle(fontWeight: FontWeight.w800)),
-                SizedBox(width: 10),
-                Text("115, 黑色， XL， 1件"),
-              ],
+            child: InkWell(
+              onTap: (){
+                ProductShowModelBottomSheet().showDetailSelectInfoSheet(context);
+              },
+              child: Row(
+                children: [
+                  Text("已选：", style: TextStyle(fontWeight: FontWeight.w800)),
+                  SizedBox(width: 10),
+                  Text("115, 黑色， XL， 1件"),
+                ],
+              ),
             ),
           ),
           // 运费
@@ -85,8 +91,6 @@ class _ProductDetailInfoPageState extends State<ProductDetailInfoPage> {
             ),
           )
         ],
-        
-        
       ),
     );
   }
