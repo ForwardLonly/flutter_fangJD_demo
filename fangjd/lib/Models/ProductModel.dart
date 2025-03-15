@@ -1,3 +1,5 @@
+import 'package:fangjd/Services/ImageUrl.dart';
+
 class ProductModel {
   List<ProductItemModel> result = [];
 
@@ -19,20 +21,22 @@ class ProductModel {
 }
 
 class ProductItemModel {
-  late int iId;
+  late String iId;
   late String title;
-  late String price;
+  late String cid;
+  late int price;
   late String oldPrice;
   late String pic;
 
-  ProductItemModel({ required this.iId, required this.title, required this.price, required this.oldPrice, required this.pic});
+  ProductItemModel({ required this.iId, required this.title,  required this.cid, required this.price, required this.oldPrice, required this.pic});
 
   ProductItemModel.fromJson(Map<String, dynamic> json) {
     iId = json['_id'];
     title = json['title'];
+    cid = json['cid'];
     price = json['price'];
     oldPrice = json['old_price'];
-    pic = json['pic'];
+    pic = Imageurl.getUrl(json['pic']);
   }
 
   Map<String, dynamic> toJson() {

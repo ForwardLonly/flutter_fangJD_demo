@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   final dioRequest = Diorequest();
   List<FocusItemModel> _focusItemList = [];
   List<ProductItemModel> _guessYouLikeList = [];
+  List<ProductItemModel> _hotRecommendList = [];
 
   // 保持页面状态的设置
   @override
@@ -34,6 +35,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     _getSwipterDataRequest();
     // 获取猜你喜欢的数据
     _getGuessYouLikeDataRequest();
+    // 获取热门推荐的数据
+    _getHotRecommendDataRequest();
   }
 
   // 获取轮播图的数据
@@ -50,12 +53,32 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   // 获取猜你喜欢的数据
   void _getGuessYouLikeDataRequest() async {
-    final response = await dioRequest.dio.get('http://jd.itying.com/api/plist?is_hot=1');
+    final response = await dioRequest.dio.get(
+      'https://jdmall.itying.com/api/plist?is_hot=1'
+    );
     if (response.statusCode == 200) {
-      final data = json.decode(response.data);
+      final data = response.data;
       ProductModel productM = ProductModel.fromJson(data);
       setState(() {
         _guessYouLikeList = productM.result;
+      });
+    } else {
+      print('请求失败');
+      setState(() {
+      });
+    }
+  }
+
+  // 获取热门推荐的数据
+  void _getHotRecommendDataRequest() async {
+    final response = await dioRequest.dio.get(
+      'https://jdmall.itying.com/api/plist?is_best=1'
+    );
+    if (response.statusCode == 200) {
+      final data = response.data;
+      ProductModel productM = ProductModel.fromJson(data);
+      setState(() {
+        _hotRecommendList = productM.result;
       });
     } else {
       print('请求失败');
@@ -135,28 +158,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       return Container(
         height: Screenadapter.height(210),
         padding: EdgeInsets.only(left: Screenadapter.width(20), top: Screenadapter.width(20), right: Screenadapter.width(20)),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                Container(
-                  height: Screenadapter.height(140),
-                  width: Screenadapter.height(140),
-                  margin: EdgeInsets.only(left: Screenadapter.width(10) ,right: Screenadapter.width(10)),
-                  child: Image.network('https://www.itying.com/images/flutter/hot${index+1}.jpg'),
-                ),
-                Container(
-                  padding: EdgeInsets.only(top: Screenadapter.width(10)),
-                  height:Screenadapter.height(44) ,
-                  width: Screenadapter.height(140),
-                  child: Text('第${index+1}个', overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, ),
-                )
-              ],
-            );
-          },
-          itemCount: 10,
-        ),
+        child: Center(child: Text("加载中..."),),
       );  
     }
     
@@ -169,23 +171,14 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       child: Wrap(
         runSpacing: Screenadapter.width(20),
         spacing: Screenadapter.width(20),
-        children: [
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-          _hotRecommentItemWidget(),
-        ],
+        children: _hotRecommendList.map((value){
+          return _hotRecommentItemWidget(value);
+        }).toList(),
       ),
     );
   }
 
-  Widget _hotRecommentItemWidget() {
+  Widget _hotRecommentItemWidget(ProductItemModel itemModel) {
     double itemWidth = (Screenadapter.screenWidth() - Screenadapter.width(60)) / 2;
     return Container(
       width: itemWidth,
@@ -200,12 +193,12 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         children: [
           AspectRatio(
             aspectRatio: 1 / 1,
-            child: Image.network('https://www.itying.com/images/flutter/list1.jpg', fit: BoxFit.cover),
+            child: Image.network(itemModel.pic, fit: BoxFit.cover),
           ),
           Padding(
             padding: EdgeInsets.only(top: Screenadapter.height(20)),
             child: Text(
-              '2019年夏季新款气质高贵洋气阔太太修身有女人味中长款宽松的游泳群',
+              itemModel.title,
               style: TextStyle(
                 color: Colors.black87, 
                 fontSize: 16,
@@ -221,7 +214,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '￥188',
+                    '￥${itemModel.price}',
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 18
@@ -231,7 +224,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '￥124',
+                    itemModel.oldPrice,
                     style: TextStyle(
                       color: Colors.black45,
                       fontSize: 14,

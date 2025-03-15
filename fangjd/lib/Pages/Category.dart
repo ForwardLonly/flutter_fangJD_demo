@@ -37,10 +37,9 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
 
   // 左边分类的数据请求
   void _getLeftCategoryDataRequest() async {
-    final response = await dioRequest.dio.get('http://jd.itying.com/api/pcate');
+    final response = await dioRequest.dio.get('https://jdmall.itying.com/api/pcate');
     if (response.statusCode == 200) {
-      print(response.data is Map);
-      final data = json.decode(response.data);
+      final data = response.data;
       final categoryM = CategoryModel.fromJson(data);
       setState(() {
         _leftCategoryItemList = categoryM.result;
@@ -56,10 +55,12 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
   }
 
   // 右边分类的数据请求
-  void _rightCategoryDataRequest(int pid) async {
+  void _rightCategoryDataRequest(String pid) async {
     try {
-      final response = await dioRequest.dio.get('http://jd.itying.com/api/pcate/pid=${pid}');
-      final data = json.decode(response.data);
+      final response = await dioRequest.dio.get(
+        'https://jdmall.itying.com/api/pcate?pid=${pid}'
+      );
+      final data = response.data;
       final categoryM = CategoryModel.fromJson(data);
       setState(() {
         _rightCategoryItemList = categoryM.result;
@@ -129,7 +130,7 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
               return InkWell(
                 onTap: (){
                   Navigator.pushNamed(context, '/productList', arguments: {
-                      "cid": "111"
+                      "cid": _rightCategoryItemList[index].pid
                   });
                 },
                 child: Column(

@@ -1,3 +1,5 @@
+import 'package:fangjd/Services/ImageUrl.dart';
+
 class CategoryModel {
   late List<CategoryItemModel> result = [];
 
@@ -6,7 +8,7 @@ class CategoryModel {
   CategoryModel.fromJson(Map<String, dynamic> json) {
     if (json['result'] != null) {
       json['result'].forEach((v) {
-        result.add(new CategoryItemModel.fromJson(v));
+        result.add(CategoryItemModel.fromJson(v));
       });
     }
   }
@@ -19,7 +21,7 @@ class CategoryModel {
 }
 
 class CategoryItemModel {
-  late int iId;
+  late String iId;
   late String pic;
   late String title;
   late String pid;
@@ -28,11 +30,11 @@ class CategoryItemModel {
   CategoryItemModel({required this.iId,  required this.pic, required this.title, required this.pid,  required this.sort});
 
   CategoryItemModel.fromJson(Map<String, dynamic> json) {
-    iId = json['_id'];
-    pic = json['pic'];
-    title = json['title'];
-    pid = json['pid'];
-    sort = json['sort'];
+    iId = json['_id'].toString();
+    pic = Imageurl.getUrl(json['pic'].toString());
+    title = json['title'].toString();
+    pid = json['pid'].toString();
+    sort = json['sort'].toString();
   }
 
   Map<String, dynamic> toJson() {

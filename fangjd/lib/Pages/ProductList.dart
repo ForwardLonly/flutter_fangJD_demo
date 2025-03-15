@@ -1,5 +1,6 @@
 import 'package:fangjd/CommonWidget/LoadingWidget.dart';
 import 'package:fangjd/Models/ProductModel.dart';
+import 'package:fangjd/Services/DioRequest.dart';
 import 'package:fangjd/Services/ScreenAdapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ class ProductlistPage extends StatefulWidget {
 }
 
 class _ProductlistPageState extends State<ProductlistPage> {
+  final dioRequest = Diorequest();
   // ScaffoldState, 控制侧边栏的显示
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // 筛选导航栏的索引
@@ -26,6 +28,8 @@ class _ProductlistPageState extends State<ProductlistPage> {
   bool _isShowMore = false;
   // 是否有更多的数据
   bool _isHaveMoreData = true;
+  // 分页数据
+  int _papge = 1;
   // 搜索文字的初始化
   final TextEditingController _textEditContr = TextEditingController();
 
@@ -70,27 +74,29 @@ class _ProductlistPageState extends State<ProductlistPage> {
     setState(() {
       _isShowMore = true;
     });
-    // 模拟网络延迟
-    await Future.delayed(Duration(seconds: 2)); 
-    List<ProductItemModel> mockDataList = _mockData();
-    setState(() {
-      _productList.addAll(mockDataList);
-      _isShowMore = false;
-      if (_productList.length > 20) {
-        _isHaveMoreData = false;
-      }
-    });
-  }
 
-  // 模拟数据
-  List<ProductItemModel> _mockData() {
-    // return
-    List<ProductItemModel> mockList = [];
-    for (var index in [1,2,3,4,5,6,7,8,9,0]) {
-      var model = ProductItemModel(iId: 1, title: '笔记本电脑$index', price: "￥3980", oldPrice: "￥4999", pic: "https://www.itying.com/images/flutter/hot${index+1}.jpg");
-      mockList.add(model);
+    var apiUrl = 'https://jdmall.itying.com/api/plist?page=$_papge';
+    if (widget.arguments["keyword"] != null) {
+      apiUrl = "$apiUrl&search=${widget.arguments["keyword"]}";
     }
-    return mockList;
+    if (widget.arguments["cid"] != null) {
+      // apiUrl = "$apiUrl&cid=${widget.arguments["cid"]}";
+    }
+    final response = await dioRequest.dio.get(apiUrl);
+    if (response.statusCode == 200) {
+      final data = response.data;
+      ProductModel productM = ProductModel.fromJson(data);
+      setState(() {
+        _isShowMore = false;
+        _productList.addAll(productM.result);
+        if (productM.result.length < 10) {
+          _isHaveMoreData = false;
+        } else {
+          _isHaveMoreData = true;
+          _papge ++;
+        }
+      });
+    }
   }
 
   // -----视图设置--------
@@ -329,7 +335,13 @@ class _ProductlistPageState extends State<ProductlistPage> {
                               ),
                             ),
                             SizedBox(height: Screenadapter.width(20)),
-                            Text(itemModel.price, style: TextStyle(color: Colors.red, fontSize: 18))
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("￥${itemModel.price}", style: TextStyle(color: Colors.red, fontSize: 18)),
+                                Text("￥${itemModel.oldPrice}", style: TextStyle(color: Colors.black54, fontSize: 16, decoration: TextDecoration.lineThrough))
+                              ],
+                            )
                           ]
                         )
                       ))
